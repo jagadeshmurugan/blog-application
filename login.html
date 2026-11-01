@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebWriters Blog - Log in</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="login">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">WebWriters</a>
+      <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <nav id="nav-links" class="nav-links" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="form-page">
+    <div class="container">
+      <div class="form-box">
+        <h1>Log in</h1>
+        <p class="form-intro">Welcome back. Enter the details you registered with.</p>
+
+        <div id="form-message" class="message" hidden></div>
+
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" autocomplete="email">
+            <p class="error" id="email-error"></p>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" autocomplete="current-password">
+            <p class="error" id="password-error"></p>
+          </div>
+          <button type="submit" class="btn">Log in</button>
+        </form>
+
+        <p class="form-footer">New here? <a href="register.html">Create an account</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">WebWriters Blog - a Codomax internship project</div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

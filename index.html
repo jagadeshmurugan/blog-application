@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebWriters Blog - Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="home">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">WebWriters</a>
+      <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <nav id="nav-links" class="nav-links" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Write down what you learned today.</h1>
+        <p>WebWriters is a small place to publish short articles, keep track of your posts and read what other writers are sharing.</p>
+        <div class="hero-buttons">
+          <a href="create-blog.html" class="btn">Write a post</a>
+          <a href="#all-posts" class="btn btn-outline">Browse posts</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Featured posts</h2>
+        <div class="post-grid" id="featured-posts"></div>
+      </div>
+    </section>
+
+    <section class="section" id="all-posts">
+      <div class="container">
+        <div class="section-top">
+          <h2 class="section-title">All posts</h2>
+          <div class="filter">
+            <label for="category-filter">Category</label>
+            <select id="category-filter">
+              <option value="All">All</option>
+              <option value="Technology">Technology</option>
+              <option value="Lifestyle">Lifestyle</option>
+              <option value="Education">Education</option>
+              <option value="Travel">Travel</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="post-grid" id="post-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="post-dialog" id="post-dialog"></dialog>
+
+  <footer class="site-footer">
+    <div class="container">WebWriters Blog - a Codomax internship project</div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

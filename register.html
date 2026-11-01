@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebWriters Blog - Register</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="register">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">WebWriters</a>
+      <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <nav id="nav-links" class="nav-links" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="form-page">
+    <div class="container">
+      <div class="form-box">
+        <h1>Create an account</h1>
+        <p class="form-intro">Register to start publishing your own posts.</p>
+
+        <form id="register-form" novalidate>
+          <div class="form-group">
+            <label for="name">Full name</label>
+            <input type="text" id="name" name="name" autocomplete="name">
+            <p class="error" id="name-error"></p>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" autocomplete="email">
+            <p class="error" id="email-error"></p>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" autocomplete="new-password">
+            <p class="error" id="password-error"></p>
+          </div>
+          <div class="form-group">
+            <label for="confirm-password">Confirm password</label>
+            <input type="password" id="confirm-password" name="confirm-password" autocomplete="new-password">
+            <p class="error" id="confirm-password-error"></p>
+          </div>
+          <button type="submit" class="btn">Register</button>
+        </form>
+
+        <p class="form-footer">Already registered? <a href="login.html">Log in</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">WebWriters Blog - a Codomax internship project</div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
