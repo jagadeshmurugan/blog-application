@@ -101,15 +101,15 @@ function buildNav() {
 
   const links = user
     ? [
-        ["index.html", "Home", "home"],
-        ["dashboard.html", "Dashboard", "dashboard"],
-        ["create-blog.html", "Create Blog", "create"]
-      ]
+      ["index.html", "Home", "home"],
+      ["dashboard.html", "Dashboard", "dashboard"],
+      ["create-blog.html", "Create Blog", "create"]
+    ]
     : [
-        ["index.html", "Home", "home"],
-        ["login.html", "Login", "login"],
-        ["register.html", "Register", "register"]
-      ];
+      ["index.html", "Home", "home"],
+      ["login.html", "Login", "login"],
+      ["register.html", "Register", "register"]
+    ];
 
   nav.innerHTML = links.map(function (link) {
     const active = link[2] === page
@@ -329,16 +329,14 @@ function setupLogin() {
 function createCard(post, showActions) {
   const image = post.imageUrl
     ? '<img src="' + escapeHtml(post.imageUrl) +
-      '" alt="" onerror="this.remove()">'
+    '" alt="" onerror="this.remove()">'
     : "";
 
   const excerpt = post.content.length > 110
     ? post.content.slice(0, 110).trim() + "..."
     : post.content;
 
-  let actions =
-    '<button type="button" class="btn btn-small read-btn" data-id="' +
-    escapeHtml(post.id) + '">Read</button>';
+  let actions = '<a href="blog-details.html?id=' + encodeURIComponent(post.id) + '" class="btn btn-small">Read</a>';
 
   if (showActions) {
     actions +=
@@ -350,50 +348,58 @@ function createCard(post, showActions) {
 
   return (
     '<article class="post-card">' +
-      image +
-      '<div class="post-body">' +
-        '<span class="tag">' + escapeHtml(post.category) + '</span>' +
-        '<h3>' + escapeHtml(post.title) + '</h3>' +
-        '<p class="post-meta">By ' + escapeHtml(post.authorName) +
-        ' on ' + formatDate(post.date) + '</p>' +
-        '<p class="post-excerpt">' + escapeHtml(excerpt) + '</p>' +
-        '<div class="post-actions">' + actions + '</div>' +
-      '</div>' +
+    image +
+    '<div class="post-body">' +
+    '<span class="tag">' + escapeHtml(post.category) + '</span>' +
+    '<h3>' + escapeHtml(post.title) + '</h3>' +
+    '<p class="post-meta">By ' + escapeHtml(post.authorName) +
+    ' on ' + formatDate(post.date) + '</p>' +
+    '<p class="post-excerpt">' + escapeHtml(excerpt) + '</p>' +
+    '<div class="post-actions">' + actions + '</div>' +
+    '</div>' +
     '</article>'
   );
 }
-
-function openPost(id) {
-  const post = readData(POSTS_KEY).find(function (item) {
-    return item.id === id;
-  });
-
+async function openPost(id) {
   const dialog = document.getElementById("post-dialog");
 
-  if (!post || !dialog) return;
+  if (!dialog) return;
 
-  const image = post.imageUrl
-    ? '<img src="' + escapeHtml(post.imageUrl) +
-      '" alt="" onerror="this.remove()">'
-    : "";
+  try {
+    const response = await fetch(API_URL + "/blogs/" + encodeURIComponent(id));
+    const data = await response.json();
 
-  dialog.innerHTML =
-    image +
-    '<span class="tag">' + escapeHtml(post.category) + '</span>' +
-    '<h2>' + escapeHtml(post.title) + '</h2>' +
-    '<p class="post-meta">By ' + escapeHtml(post.authorName) +
-    ' on ' + formatDate(post.date) + '</p>' +
-    '<p class="post-full-text">' + escapeHtml(post.content) + '</p>' +
-    '<button type="button" class="btn btn-outline btn-small" id="close-dialog">Close</button>';
+    if (!response.ok) {
+      throw new Error(data.message || "Unable to load blog details");
+    }
 
-  dialog.showModal();
+    const post = data.blog;
 
-  document.getElementById("close-dialog")
-    .addEventListener("click", function () {
+    const image = post.imageUrl
+      ? '<img src="' + escapeHtml(post.imageUrl) + '" alt="' + escapeHtml(post.title) + '">'
+      : "";
+
+    dialog.innerHTML = `
+            ${image}
+            <p>${escapeHtml(post.category)}</p>
+            <h2>${escapeHtml(post.title)}</h2>
+            <p>By ${escapeHtml(post.authorName)}</p>
+            <p>${formatDate(post.date || post.createdAt)}</p>
+            <div>${escapeHtml(post.content)}</div>
+            <button type="button" class="btn close-dialog">Close</button>
+        `;
+
+    dialog.showModal();
+
+    dialog.querySelector(".close-dialog").addEventListener("click", function () {
       dialog.close();
     });
-}
 
+  } catch (error) {
+    console.error("Blog Details API Error:", error);
+    alert("Unable to load blog details. Please try again.");
+  }
+}
 function setupReadButtons(container) {
   container.addEventListener("click", function (event) {
     const button = event.target.closest(".read-btn");
@@ -403,17 +409,15 @@ function setupReadButtons(container) {
     }
   });
 }
-
 /* Home Page */
-
-function setupHome() {
+async function setupHome() {
   const featured = document.getElementById("featured-posts");
   const list = document.getElementById("post-list");
   const filter = document.getElementById("category-filter");
 
   if (!featured || !list || !filter) return;
 
-  const posts = readData(POSTS_KEY);
+  let posts = [];
 
   function showAllPosts() {
     const category = filter.value;
@@ -421,8 +425,8 @@ function setupHome() {
     const shown = category === "All"
       ? posts
       : posts.filter(function (post) {
-          return post.category === category;
-        });
+        return post.category === category;
+      });
 
     if (shown.length === 0) {
       list.innerHTML =
@@ -435,22 +439,48 @@ function setupHome() {
     }).join("");
   }
 
-  if (posts.length === 0) {
+  try {
     featured.innerHTML =
-      '<div class="empty-message">No posts have been published yet.<br>' +
-      '<a href="create-blog.html" class="btn">Write the first one</a></div>';
-  } else {
-    featured.innerHTML = posts.slice(0, 3).map(function (post) {
-      return createCard(post, false);
-    }).join("");
+      '<div class="empty-message">Loading blogs...</div>';
+
+    const response = await fetch(API_URL + "/blogs");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Unable to load blogs.");
+    }
+
+    posts = (data.blogs || []).map(function (post) {
+      return {
+        ...post,
+        date: post.date || post.createdAt
+      };
+    });
+
+    if (posts.length === 0) {
+      featured.innerHTML =
+        '<div class="empty-message">No posts have been published yet.</div>';
+    } else {
+      featured.innerHTML = posts.slice(0, 3).map(function (post) {
+        return createCard(post, false);
+      }).join("");
+    }
+
+    showAllPosts();
+
+    filter.addEventListener("change", showAllPosts);
+
+    setupReadButtons(featured);
+    setupReadButtons(list);
+
+  } catch (error) {
+    console.error("Get Blogs API Error:", error);
+
+    featured.innerHTML =
+      '<div class="empty-message">Unable to load blogs. Please try again.</div>';
+
+    list.innerHTML = "";
   }
-
-  showAllPosts();
-
-  filter.addEventListener("change", showAllPosts);
-
-  setupReadButtons(featured);
-  setupReadButtons(list);
 }
 
 /* Dashboard */
@@ -519,7 +549,7 @@ function setupCreateBlog() {
   if (editId) {
     editingPost = readData(POSTS_KEY).find(function (post) {
       return String(post.id) === String(editId) &&
-       String(post.authorId) === String(user.id);
+        String(post.authorId) === String(user.id);
     });
 
     if (!editingPost) {
@@ -581,9 +611,9 @@ function setupCreateBlog() {
       editingPost.content = content;
 
       saveData(POSTS_KEY, posts.map(function (post) {
-       return String(post.id) === String(editingPost.id)
-       ? editingPost
-       : post;
+        return String(post.id) === String(editingPost.id)
+          ? editingPost
+          : post;
       }));
 
       window.location.href = "dashboard.html";
@@ -668,7 +698,54 @@ function setupCreateBlog() {
     }
   });
 }
+async function setupBlogDetails() {
+    const container = document.getElementById("blog-details");
 
+    if (!container) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const blogId = params.get("id");
+
+    if (!blogId) {
+        container.innerHTML = '<p class="empty-message">Blog not found.</p>';
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            API_URL + "/blogs/" + encodeURIComponent(blogId)
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Unable to load blog.");
+        }
+
+        const post = data.blog;
+
+        const image = post.imageUrl
+            ? `<img src="${escapeHtml(post.imageUrl)}" alt="${escapeHtml(post.title)}">`
+            : "";
+
+        container.innerHTML = `
+            <article class="blog-details">
+                ${image}
+                <p>${escapeHtml(post.category)}</p>
+                <h1>${escapeHtml(post.title)}</h1>
+                <p>By ${escapeHtml(post.authorName)}</p>
+                <p>${formatDate(post.date || post.createdAt)}</p>
+                <div>${escapeHtml(post.content)}</div>
+                <a href="index.html" class="btn">Back to Home</a>
+            </article>
+        `;
+
+    } catch (error) {
+        console.error("Blog Details Error:", error);
+        container.innerHTML =
+            '<p class="empty-message">Unable to load blog details.</p>';
+    }
+}
 /* Start Application */
 
 seedPosts();
@@ -703,4 +780,6 @@ if (
 
 } else if (currentPage === "create") {
   setupCreateBlog();
+}else if (currentPage === "blog-details") {
+    setupBlogDetails();
 }

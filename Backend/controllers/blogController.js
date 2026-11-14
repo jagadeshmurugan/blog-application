@@ -1,7 +1,7 @@
-const { blogs } = require("../data/memoryStore");
+
 
 // Create Blog
-const createBlog = (req, res) => {
+const createBlog = async (req, res) => {
     try {
         const { title, content, category, imageUrl, authorId, authorName } = req.body;
 
@@ -26,6 +26,8 @@ const createBlog = (req, res) => {
             });
         }
 
+        const db = req.app.locals.db;
+        const blogs = db.collection("blogs");
         // Create new blog
         const newBlog = {
             id: Date.now(),
@@ -39,7 +41,7 @@ const createBlog = (req, res) => {
         };
 
         // Store blog
-        blogs.push(newBlog);
+        await blogs.insertOne(newBlog);
 
         // Send response
         res.status(201).json({
@@ -54,7 +56,59 @@ const createBlog = (req, res) => {
     }
 };
 
+// Get All Blogs
+const getAllBlogs = async (req, res) => {
+    try {
+        const db = req.app.locals.db;
+
+        const blogs = db.collection("blogs");
+
+        const allBlogs = await blogs.find().toArray();
+
+        res.status(200).json({
+            message: "Blogs retrieved successfully",
+            blogs: allBlogs
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
+
+// Get Single Blog
+const getBlogById = async (req, res) => {
+    try {
+        const db = req.app.locals.db;
+
+        const blogs = db.collection("blogs");
+
+        const blog = await blogs.findOne({
+            id: Number(req.params.id)
+        });
+
+        if (!blog) {
+            return res.status(404).json({
+                message: "Blog not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "Blog retrieved successfully",
+            blog
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
+
 // Export function
 module.exports = {
-    createBlog
+    createBlog,
+    getAllBlogs,
+    getBlogById
 };

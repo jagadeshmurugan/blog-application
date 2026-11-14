@@ -1,5 +1,4 @@
 const bcrypt = require("bcryptjs");
-const { users } = require("../data/memoryStore");
 
 // User Registration
 const registerUser = async (req, res) => {
@@ -24,9 +23,13 @@ const registerUser = async (req, res) => {
             });
         }
 
-        const existingUser = users.find(
-            (user) => user.email === email.toLowerCase().trim()
-        );
+        const db = req.app.locals.db;
+
+        const users = db.collection("users");
+
+        const existingUser = await users.findOne({
+            email: email.toLowerCase().trim()
+        });
 
         if (existingUser) {
             return res.status(409).json({
@@ -43,7 +46,7 @@ const registerUser = async (req, res) => {
             password: hashedPassword
         };
 
-        users.push(newUser);
+        await users.insertOne(newUser);
 
         res.status(201).json({
             message: "Registration successful",
@@ -73,9 +76,13 @@ const loginUser = async (req, res) => {
             });
         }
 
-        const user = users.find(
-            (user) => user.email === email.toLowerCase().trim()
-        );
+        const db = req.app.locals.db;
+
+        const users = db.collection("users");
+
+        const user = await users.findOne({
+            email: email.toLowerCase().trim()
+        });
 
         if (!user) {
             return res.status(401).json({
