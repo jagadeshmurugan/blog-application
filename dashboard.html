@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebWriters Blog - Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body data-page="dashboard">
   <header class="site-header">
     <div class="container header-inner">
       <a href="index.html" class="logo">WebWriters</a>
-      <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false"
+        aria-controls="nav-links">Menu</button>
       <nav id="nav-links" class="nav-links" aria-label="Main navigation"></nav>
     </div>
   </header>
@@ -19,7 +22,10 @@
     <section class="dashboard">
       <div class="container">
         <div class="dashboard-top">
-          <h1 id="welcome-title">Your dashboard</h1>
+          <div>
+            <h1 id="welcome-title">Your dashboard</h1>
+            <p id="welcome-email"></p>
+          </div>
           <a href="create-blog.html" class="btn">New post</a>
         </div>
         <p class="dashboard-summary" id="post-summary"></p>
@@ -36,4 +42,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>

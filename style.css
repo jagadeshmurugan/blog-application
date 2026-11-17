@@ -21,7 +21,9 @@ main {
   flex: 1;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: "Lora", Georgia, serif;
   line-height: 1.25;
 }
@@ -395,6 +397,7 @@ img {
 }
 
 /* dashboard */
+/* dashboard */
 .dashboard {
   padding: 48px 0 0;
 }
@@ -410,6 +413,12 @@ img {
 
 .dashboard-top h1 {
   font-size: 2rem;
+  margin-bottom: 6px;
+}
+
+.dashboard-top p {
+  color: #6b7280;
+  margin: 0;
 }
 
 .dashboard-summary {

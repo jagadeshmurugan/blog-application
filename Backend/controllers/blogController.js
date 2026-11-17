@@ -3,10 +3,10 @@
 // Create Blog
 const createBlog = async (req, res) => {
     try {
-        const { title, content, category, imageUrl, authorId, authorName } = req.body;
+        const { title, content, category, imageUrl } = req.body;
 
         // Check required fields
-        if (!title || !content || !category || !authorId || !authorName) {
+        if (!title || !content || !category) {
             return res.status(400).json({
                 message: "All required fields must be provided"
             });
@@ -35,8 +35,8 @@ const createBlog = async (req, res) => {
             content: content.trim(),
             category: category.trim(),
             imageUrl: imageUrl || "",
-            authorId,
-            authorName,
+            authorId: req.user.id,
+            authorName: req.user.name,
             createdAt: new Date()
         };
 
@@ -68,6 +68,28 @@ const getAllBlogs = async (req, res) => {
         res.status(200).json({
             message: "Blogs retrieved successfully",
             blogs: allBlogs
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
+
+// Get Logged-in User Blogs
+const getMyBlogs = async (req, res) => {
+    try {
+        const db = req.app.locals.db;
+        const blogs = db.collection("blogs");
+
+        const myBlogs = await blogs.find({
+            authorId: req.user.id
+        }).toArray();
+
+        res.status(200).json({
+            message: "User blogs retrieved successfully",
+            blogs: myBlogs
         });
 
     } catch (error) {
@@ -131,7 +153,10 @@ const updateBlog = async (req, res) => {
         const blogs = db.collection("blogs");
 
         const result = await blogs.updateOne(
-            { id: Number(req.params.id) },
+            {
+                id: Number(req.params.id),
+                authorId: req.user.id
+            },
             {
                 $set: {
                     title: title.trim(),
@@ -170,7 +195,8 @@ const deleteBlog = async (req, res) => {
         const blogs = db.collection("blogs");
 
         const result = await blogs.deleteOne({
-            id: Number(req.params.id)
+            id: Number(req.params.id),
+            authorId: req.user.id
         });
 
         if (result.deletedCount === 0) {
@@ -194,6 +220,7 @@ const deleteBlog = async (req, res) => {
 module.exports = {
     createBlog,
     getAllBlogs,
+    getMyBlogs,
     getBlogById,
     updateBlog,
     deleteBlog
