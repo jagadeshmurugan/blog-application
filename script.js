@@ -2,7 +2,7 @@ const USERS_KEY = "blogUsers";
 const POSTS_KEY = "blogPosts";
 const SESSION_KEY = "blogCurrentUser";
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://webwriters-backend.onrender.com/api";
 
 const samplePosts = [
   {
