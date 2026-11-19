@@ -2,7 +2,7 @@ const USERS_KEY = "blogUsers";
 const POSTS_KEY = "blogPosts";
 const SESSION_KEY = "blogCurrentUser";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "http://localhost:3000/api";
 
 const samplePosts = [
   {

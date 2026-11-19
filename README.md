@@ -1,66 +1,187 @@
-# Inkwell Blog Application
+# WebWriters Blog Application
 
-A small, responsive blog application built for the Codomax Full Stack Web Development internship (Module 01). Users can register, log in, publish blog posts, and manage their own posts from a dashboard.
+WebWriters is a responsive full-stack blog application developed as part of the Codomax Full Stack Web Development Internship.
+
+The application allows users to register, log in securely, create blog posts, read posts, and manage their own content through a personal dashboard.
 
 ## Technologies Used
 
+### Frontend
 - HTML5
-- CSS3 (Flexbox and Grid)
+- CSS3
 - Vanilla JavaScript
-- Browser localStorage
 
-No frameworks or libraries are used.
+### Backend
+- Node.js
+- Express.js
+- REST API
+- JWT Authentication
+- bcryptjs
+
+### Database
+- MongoDB Atlas
+
+### Tools
+- Visual Studio Code
+- Postman
+- Git and GitHub
 
 ## Features
 
-- Home page with a hero section, featured posts, and a post list with a category filter
-- Registration with input validation
-- Login that checks accounts created through the registration form
-- Dashboard showing the logged-in user's own posts
-- Create, edit, and delete blog posts (title, category, optional image URL, content)
-- Read any post in a pop-up window
-- Friendly messages when there are no posts
-- Logout
-- Responsive layout for desktop, tablet, and mobile
+- Responsive home page with featured blog posts
+- User registration and login
+- JWT-based authentication
+- Protected user dashboard
+- Create new blog posts
+- View all published blog posts
+- Read individual blog posts
+- Edit and delete personal blog posts
+- User-specific blog management
+- Category filtering
+- Logout functionality
+- Responsive design for desktop, tablet, and mobile
+- MongoDB database integration
 
-## Folder Structure
+## Project Structure
 
-```
+```text
 blog-application/
+│
 ├── index.html
 ├── login.html
 ├── register.html
 ├── dashboard.html
 ├── create-blog.html
-├── css/
-│   └── style.css
-├── js/
-│   └── script.js
-└── README.md
+├── blog-details.html
+├── script.js
+├── style.css
+├── webwriters-icon.png
+├── README.md
+│
+└── Backend/
+    ├── server.js
+    ├── package.json
+    ├── config/
+    │   └── db.js
+    ├── controllers/
+    │   ├── authController.js
+    │   └── blogController.js
+    ├── routes/
+    │   ├── authRoutes.js
+    │   └── blogRoutes.js
+    └── middleware/
+        └── authMiddleware.js
 ```
 
-## How to Run in VS Code
+## Installation and Setup
 
-1. Install [Visual Studio Code](https://code.visualstudio.com/).
-2. Open the `blog-application` folder with **File > Open Folder**.
-3. Install the **Live Server** extension from the Extensions panel.
-4. Right-click `index.html` and choose **Open with Live Server**.
-5. The app opens in your browser, usually at `http://127.0.0.1:5500/`.
+### 1. Clone the Repository
 
-You can also open `index.html` directly in a browser, but Live Server is recommended.
+```bash
+git clone https://github.com/jagadeshmurugan/blog-application.git
+```
+
+### 2. Open the Project
+
+Open the project folder in Visual Studio Code.
+
+### 3. Install Backend Dependencies
+
+```bash
+cd Backend
+npm install
+```
+
+### 4. Configure Environment Variables
+
+Create a `.env` file inside the Backend folder.
+
+Add the following configuration:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+PORT=3000
+JWT_SECRET=your_secure_secret_key
+```
+
+Replace the placeholder values with your own configuration.
+
+### 5. Start the Backend Server
+
+```bash
+node server.js
+```
+
+The backend server runs on the configured port.
+
+### 6. Run the Frontend
+
+Open the project folder in Visual Studio Code.
+
+Use the Live Server extension to open `index.html`.
+
+The frontend communicates with the backend REST API.
+
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/register` | Register a new user |
+| POST | `/api/auth/login` | Log in a user |
+
+### Blog Management
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/blogs` | Get all blog posts |
+| GET | `/api/blogs/my` | Get logged-in user's posts |
+| GET | `/api/blogs/:id` | Get a specific blog post |
+| POST | `/api/blogs` | Create a blog post |
+| PUT | `/api/blogs/:id` | Update a blog post |
+| DELETE | `/api/blogs/:id` | Delete a blog post |
+
+Protected endpoints require a valid JWT token.
 
 ## How to Use
 
-1. Click **Register** and create an account.
-2. Log in with the same email and password.
-3. Open **Create Blog** and publish a post.
-4. Go to the **Dashboard** to view, edit, or delete your posts.
-5. Click **Log out** when you are done.
+1. Open the WebWriters application.
+2. Register a new account.
+3. Log in using your registered credentials.
+4. Open the dashboard.
+5. Create and publish blog posts.
+6. View, edit, or delete your own posts.
+7. Browse published blog posts.
+8. Log out when finished.
 
-## Limitations
+## Security
 
-- **Authentication uses localStorage for demonstration only. It is not secure and must not be used in production.** Passwords are stored as plain text in the browser, and anyone with access to the browser can read them.
-- All data stays in one browser. It is not shared between devices or users.
-- Clearing browser data removes all accounts and posts.
-- Images are loaded from external URLs, so they depend on those links staying available.
-- There is no backend, password recovery, or email verification.
+- JWT authentication is used to protect user-specific routes.
+- Passwords are hashed using bcryptjs.
+- Environment variables are stored in a `.env` file.
+- Sensitive environment files are excluded from Git using `.gitignore`.
+
+## Future Improvements
+
+- Deploy the application online.
+- Add additional blog management features.
+- Improve search and filtering functionality.
+- Enhance application performance and user experience.
+
+## Author
+
+**Jagadesh M**
+
+Full Stack Web Development Intern
+
+## License
+
+This project was developed for educational and internship purposes.
+```
+
+### Next Step
+
+Bro, README save pannitu sollunga.
+
+Adhukku appuram GitHub-la update push pannuvom. Then namma Module 6-oda final task — **Deployment** — start pannalaam! 🚀
